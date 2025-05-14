@@ -19,7 +19,7 @@ export class BaseComponents {
       timeout: 90_000,
     });
     await this.checkAndCloseModal();
-    await this.page.waitForLoadState('networkidle', { timeout: 90_000 });
+    await this.page.waitForLoadState('networkidle', { timeout: 5000 });
   }
 
   async checkLogoHeaderExist() {
@@ -52,9 +52,13 @@ export class BaseComponents {
   }
 
   async checkAndCloseModal() {
+    console.log('Проверка модального окна...');
     if ((await this.dialogModalWindow.length) > 0) {
+      console.log('Пытаемся закрыть модальное окно...');
       await this.page.getByRole('button', { name: 'close' }).click();
-      await this.page.getByRole(this.dialogModalWindow).waitFor({ state: 'hidden', timeout: 90_000 });
+      await this.page.getByRole(this.dialogModalWindow).waitFor({ state: 'hidden', timeout: 5000 });
+    } else {
+      console.log('Модальное окно не найдено');
     }
   }
 }

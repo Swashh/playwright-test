@@ -50,6 +50,7 @@ export default defineConfig({
     extraHTTPHeaders: {
       "Accept-Language": "uk-UA,uk;q=0.9", 
     },
+    headless: true,
   },
 
   /* Configure projects for major browsers */

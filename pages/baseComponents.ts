@@ -1,5 +1,6 @@
 import { Page, expect } from '@playwright/test';
 
+
 export class BaseComponents {
   readonly logoHeader = 'main-page-logo';
   readonly aboutUsBtn = 'header-button-services';
@@ -55,7 +56,10 @@ export class BaseComponents {
     console.log('Проверка модального окна...');
     if ((await this.dialogModalWindow.length) > 0) {
       console.log('Пытаемся закрыть модальное окно...');
-      await this.page.getByRole('button', { name: 'close' }).click();
+      await this.page.locator('button[aria-label="close"]').click()
+      console.log("Клікнули по кнопці");
+      
+      // await this.page.getByRole('button', { name: 'close' }).click();
       await this.page.getByRole(this.dialogModalWindow).waitFor({ state: 'hidden', timeout: 5000 });
     } else {
       console.log('Модальное окно не найдено');

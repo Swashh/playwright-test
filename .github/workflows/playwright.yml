@@ -18,7 +18,16 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Install dependencies
+      - name: Install system dependencies for browsers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
+            libxkbcommon0 libxcomposite1 libxdamage1 libgbm1 \
+            libpango-1.0-0 libpangocairo-1.0-0 libasound2 libxcb1 \
+            libxrandr2 libgtk-3-0 libxss1 libx11-xcb1
+
+      - name: Install Node dependencies
         run: npm ci
 
       - name: Install Playwright Browsers

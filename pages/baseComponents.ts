@@ -53,16 +53,42 @@ export class BaseComponents {
   }
 
   async checkAndCloseModal() {
+
+
+
     console.log('Проверка модального окна...');
-    if ((await this.dialogModalWindow.length) > 0) {
+
+
+    const modal = this.page.locator(this.dialogModalWindow); 
+    const isModalVisible = await modal.isVisible({ timeout: 2000 }).catch(() => false);
+  
+    if (isModalVisible) {
       console.log('Пытаемся закрыть модальное окно...');
-      await this.page.locator('button[aria-label="close"]').click()
-      console.log("Клікнули по кнопці");
-      
-      // await this.page.getByRole('button', { name: 'close' }).click();
-      await this.page.getByRole(this.dialogModalWindow).waitFor({ state: 'hidden', timeout: 5000 });
+      await this.page.locator('button[aria-label="close"]').click(); 
+      console.log('Кликнули по кнопке закрытия');
+  
+      // Чекаємо, поки модальне вікно сховано
+      await modal.waitFor({ state: 'hidden', timeout: 5000 });
+      console.log('Модальное окно закрыто');
     } else {
       console.log('Модальное окно не найдено');
     }
+
+
+
+    // if ((await this.dialogModalWindow.length) > 0) {
+    //   await this.page.getByRole('button', { name: 'close' }).click();
+    //   await this.page.getByRole(this.dialogModalWindow).waitFor({ state: 'hidden', timeout: 5000 });
+    // } 
   }
 }
+
+
+
+const locator = page.getByText('This interstitial covers the button');
+await page.addLocatorHandler(locator, async overlay => {
+  await overlay.locator('#close').click();
+}, { times: 3, noWaitAfter: true });
+// Run your tests that can be interrupted by the overlay.
+// ...
+await page.removeLocatorHandler(locator);

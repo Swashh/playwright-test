@@ -27,7 +27,7 @@ export default defineConfig({
   // reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 
-  timeout: 30000, // Уменьшено с 120_000 до 30_000 (30 секунд)
+  timeout: 5000, 
   /* Expect timeout for assertions */
   expect: {
     timeout: 5000, // 5 секунд на ожидания (например, expect().toBeVisible())

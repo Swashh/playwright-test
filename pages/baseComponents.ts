@@ -55,7 +55,7 @@ export class BaseComponents {
   }
 
   async checkAndCloseModal() {
-    await this.closeModalWindowBtn.waitFor({ state: 'visible', timeout: 30_000 })
+    // await this.closeModalWindowBtn.waitFor({ state: 'visible', timeout: 30_000 })
     if ((await this.closeModalWindowBtn.count()) > 0) {
     await this.closeModalWindowBtn.click()
     await this.closeModalWindowBtn.waitFor({ state: 'hidden', timeout: 5000 })

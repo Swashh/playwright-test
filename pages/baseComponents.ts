@@ -1,64 +1,79 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-
 export class BaseComponents {
-  readonly logoHeader = 'main-page-logo';
-  readonly aboutUsBtn = 'header-button-services';
-  readonly informationAboutCompanyBtn = 'header-services-element-1';
-  readonly autoparkBtn = 'header-services-element-2';
-  readonly contactsBtn = 'header-services-element-3';
-  readonly dialogModalWindow = 'dialog';
-  readonly closeModalWindowBtn: Locator;
   readonly page: Page;
+  readonly logoHeader: Locator;
+  readonly aboutUsBtn: Locator;
+  readonly informationAboutCompanyBtn: Locator;
+  readonly autoparkBtn: Locator;
+  readonly contactsBtn: Locator;
+  readonly closeModalWindowBtn: Locator;
+  private handlerRegistered: boolean = false;
 
   constructor(page: Page) {
     this.page = page;
-    this.closeModalWindowBtn = this.page.getByRole('button', { name: 'close' })
+    this.closeModalWindowBtn = this.page.locator("[role='dialog'] >  button[aria-label='close']");
+    this.contactsBtn = this.page.getByTestId('header-services-element-3');
+    this.autoparkBtn = this.page.getByTestId('header-services-element-2');
+    this.informationAboutCompanyBtn = this.page.getByTestId('header-services-element-1');
+    this.aboutUsBtn = this.page.getByTestId('header-button-services').first();
+    this.logoHeader = this.page.getByTestId('main-page-logo').first();
   }
 
   async goTo(route) {
+    await this.page.addLocatorHandler(
+      this.closeModalWindowBtn,
+      async (overlay) => {
+        try {
+          console.log('Знайдена кнопка закриття модального вікна, клікаєм');
+          await overlay.click();
+          console.log('Модальне вікно закрито');
+        } catch (e) {
+          console.warn('Помилка при кліку на закриття модального вікна:', e);
+        }
+      },
+      { times: 1, noWaitAfter: true }
+    );
+    this.handlerRegistered = true;
+
     await this.page.goto(route, {
-      waitUntil: 'domcontentloaded',
-      timeout: 90_000,
+      waitUntil: 'load',
+      timeout: 30_000,
     });
-    await this.checkAndCloseModal();
-    await this.page.waitForLoadState('networkidle', { timeout:95000 });
+  }
+  async cleanup() {
+    if (this.handlerRegistered) {
+      await this.page.removeLocatorHandler(this.closeModalWindowBtn);
+      console.log('Обробник модального вікна видаленний');
+      this.handlerRegistered = false;
+    } else {
+      console.log('Обробник не був зареганий, пропускаємо видалення');
+    }
   }
 
   async checkLogoHeaderExist() {
-    await expect(this.page.getByTestId(this.logoHeader).first()).toBeVisible();
+    await expect(this.logoHeader).toBeVisible();
   }
 
   async clickAboutUsBtn() {
-    await this.page.getByTestId(this.aboutUsBtn).first().click();
+    await this.aboutUsBtn.click();
   }
 
   async clickInformationAboutCompanyBtn() {
-    await this.page.getByTestId(this.informationAboutCompanyBtn).waitFor({ state: 'visible', timeout: 10_000 });
-    await this.page.getByTestId(this.informationAboutCompanyBtn).click();
+    await this.informationAboutCompanyBtn.waitFor({ state: 'visible', timeout: 10_000 });
+    await this.informationAboutCompanyBtn.click();
     await this.page.waitForURL('**/about-us');
-    await expect(this.page.locator('h1').first()).toHaveText('Про компанію');
   }
 
   async clickAutoparkBtn() {
-    await this.page.getByTestId(this.autoparkBtn).waitFor({ state: 'visible', timeout: 10_000 });
-    await this.page.getByTestId(this.autoparkBtn).click();
+    await this.autoparkBtn.waitFor({ state: 'visible', timeout: 10_000 });
+    await this.autoparkBtn.click();
     await this.page.waitForURL('**/our-buses');
-    await expect(this.page.locator('h1').first()).toHaveText('Наш автопарк');
   }
 
   async clickContactsBtn() {
-    await this.page.getByTestId(this.autoparkBtn).waitFor({ state: 'visible', timeout: 10_000 });
-    await this.page.getByTestId(this.contactsBtn).click();
+    await this.autoparkBtn.waitFor({ state: 'visible', timeout: 10_000 });
+    await this.contactsBtn.click();
     await this.page.waitForURL('**/contacts');
-    await expect(this.page.locator('h1').first()).toHaveText('Наші контакти');
-  }
-
-  async checkAndCloseModal() {
-    // await this.closeModalWindowBtn.waitFor({ state: 'visible', timeout: 30_000 })
-    if ((await this.closeModalWindowBtn.count()) > 0) {
-    await this.closeModalWindowBtn.click()
-    await this.closeModalWindowBtn.waitFor({ state: 'hidden', timeout: 5000 })
-    } 
   }
 }

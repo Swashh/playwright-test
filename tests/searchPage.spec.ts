@@ -6,6 +6,10 @@ test.describe('Check elements and functional on search page', () => {
     await homePage.goTo('/bus/khmelnytskyi/bonn');
   });
 
+  test.afterEach(async ({ homePage }) => {
+    await homePage.cleanup();
+  });
+
   test('Check From and To navigation cities @FormSearch', async ({ searchTrip }) => {
     await searchTrip.checkFromInputShouldBe('Хмельницький');
     await searchTrip.checkToInputShouldBe('Бонн');

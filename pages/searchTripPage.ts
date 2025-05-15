@@ -38,25 +38,4 @@ export class SearchTripPage extends FilterPage {
   async checkFindTicketsBtnEnabled() {
     await expect(this.findTicketsBtn).toBeEnabled();
   }
-
-  async clickFilterBtn() {
-    await this.filterBtn.click();
-    await expect(this.closeFilterBtn).toBeVisible();
-  }
-
-  async clickCloseFilterBtn() {
-    await this.closeFilterBtn.click();
-    await expect(this.closeFilterBtn).not.toBeVisible();
-  }
-
-  async checkFilterElementExist() {
-    await expect(this.sendingRadioBtn).toBeVisible();
-    await expect(this.priceRadioBtn).toBeVisible();
-    await expect(this.durationRadioBtn).toBeVisible();
-    await expect(this.page.getByText('Відправлення з Хмельницький')).toBeVisible();
-    await expect(this.page.getByText('Прибуття в Бонн')).toBeVisible();
-    await expect(this.stationInKhm).toBeVisible();
-    await expect(this.stationInBonn).toBeVisible();
-    await expect(this.showTripBtn).toBeVisible();
-  }
 }

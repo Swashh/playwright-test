@@ -10,6 +10,8 @@ export class FilterPage {
   readonly stationInKhm: Locator;
   readonly stationInBonn: Locator;
   readonly showTripBtn: Locator;
+  readonly titleFrom: Locator;
+  readonly arriveTitle: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -21,6 +23,8 @@ export class FilterPage {
     this.stationInKhm = page.getByRole('checkbox', { name: 'KLR Bus Terminal' });
     this.stationInBonn = page.getByRole('checkbox', { name: 'Campus' });
     this.showTripBtn = page.getByRole('button', { name: 'Показати подорожі' });
+    this.titleFrom = page.getByText('Відправлення з Хмельницький');
+    this.arriveTitle = page.getByText('Прибуття в Бонн');
   }
   async clickFilterBtn() {
     await this.filterBtn.click();
@@ -36,8 +40,8 @@ export class FilterPage {
     await expect(this.sendingRadioBtn).toBeVisible();
     await expect(this.priceRadioBtn).toBeVisible();
     await expect(this.durationRadioBtn).toBeVisible();
-    await expect(this.page.getByText('Відправлення з Хмельницький')).toBeVisible();
-    await expect(this.page.getByText('Прибуття в Бонн')).toBeVisible();
+    await expect(this.titleFrom).toBeVisible();
+    await expect(this.arriveTitle).toBeVisible();
     await expect(this.stationInKhm).toBeVisible();
     await expect(this.stationInBonn).toBeVisible();
     await expect(this.showTripBtn).toBeVisible();

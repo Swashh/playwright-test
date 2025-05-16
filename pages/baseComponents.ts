@@ -21,34 +21,8 @@ export class BaseComponents {
   }
 
   async goTo(route) {
-    await this.page.addLocatorHandler(
-      this.closeModalWindowBtn,
-      async (overlay) => {
-        try {
-          console.log('Знайдена кнопка закриття модального вікна, клікаєм');
-          await overlay.click();
-          console.log('Модальне вікно закрито');
-        } catch (e) {
-          console.warn('Помилка при кліку на закриття модального вікна:', e);
-        }
-      },
-      { times: 1, noWaitAfter: true }
-    );
-    this.handlerRegistered = true;
-
-    await this.page.goto(route, {
-      waitUntil: 'load',
-      timeout: 30_000,
-    });
-  }
-  async cleanup() {
-    if (this.handlerRegistered) {
-      await this.page.removeLocatorHandler(this.closeModalWindowBtn);
-      console.log('Обробник модального вікна видаленний');
-      this.handlerRegistered = false;
-    } else {
-      console.log('Обробник не був зареганий, пропускаємо видалення');
-    }
+    await this.registerModalCloseHandler();
+    await this.page.goto(route, { waitUntil: 'load', timeout: 30_000 });
   }
 
   async checkLogoHeaderExist() {
@@ -75,5 +49,32 @@ export class BaseComponents {
     await this.autoparkBtn.waitFor({ state: 'visible', timeout: 10_000 });
     await this.contactsBtn.click();
     await this.page.waitForURL('**/contacts');
+  }
+
+  async registerModalCloseHandler() {
+    await this.page.addLocatorHandler(
+      this.closeModalWindowBtn,
+      async (overlay) => {
+        try {
+          console.log('Знайдена кнопка закриття модального вікна, клікаєм');
+          await overlay.click();
+          console.log('Модальне вікно закрито');
+        } catch (e) {
+          console.warn('Помилка при кліку на закриття модального вікна:', e);
+        }
+      },
+      { times: 1, noWaitAfter: true }
+    );
+    this.handlerRegistered = true;
+  }
+
+  async cleanup() {
+    if (this.handlerRegistered) {
+      await this.page.removeLocatorHandler(this.closeModalWindowBtn);
+      console.log('Обробник модального вікна видаленний');
+      this.handlerRegistered = false;
+    } else {
+      console.log('Обробник не був зареганий, пропускаємо видалення');
+    }
   }
 }

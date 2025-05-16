@@ -1,6 +1,6 @@
-import { Page } from "@playwright/test";
+import { Page } from '@playwright/test';
 
-import { BaseComponents } from "./baseComponents";
+import { BaseComponents } from './baseComponents';
 
 export class HomePage extends BaseComponents {
   readonly page: Page;

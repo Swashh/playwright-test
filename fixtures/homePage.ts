@@ -1,6 +1,6 @@
-import { test as homePageFixture } from "@playwright/test";
-import { HomePage } from "../pages/homePage";
-import { SearchTripPage } from "../pages/searchTripPage";
+import { test as homePageFixture } from '@playwright/test';
+import { HomePage } from '../pages/homePage';
+import { SearchTripPage } from '../pages/searchTripPage';
 
 type HomePageType = {
   homePage: HomePage;
@@ -17,4 +17,4 @@ export const test = homePageFixture.extend<HomePageType>({
   },
 });
 
-export { expect } from "@playwright/test";
+export { expect } from '@playwright/test';
